@@ -16,7 +16,7 @@ activity <- read.csv('activity.csv')
 stepsPerDay <- ddply(activity,~date,summarise,sum=sum(steps,na.rm = TRUE))
 
 # Histogram of Total Number of Steps Per Day
-with(stepsPerDay, hist(sum))
+with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day"))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
@@ -43,7 +43,8 @@ median(stepsPerDay$sum)
 # Average Steps Per Interval
 avgStepsInt <- ddply(activity,~interval,summarise,mean=mean(steps,na.rm = TRUE))
 
-plot(avgStepsInt$interval, avgStepsInt$mean, type='l')
+plot(avgStepsInt$interval, avgStepsInt$mean, type='l', main = "Average Daily Pattern",
+     xlab="Time Interval", ylab="Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
@@ -86,7 +87,7 @@ sum(is.na(activityAdjusted))
 ```r
 # Histogram of Steps per Day with NA values replaced with average steps/5 min interval
 stepsPerDay <- ddply(activityAdjusted,~date,summarise,sum=sum(steps,na.rm = TRUE))
-with(stepsPerDay, hist(sum))
+with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day (NAs Replaced with Average Steps/5 Min Interval)"))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
@@ -140,7 +141,8 @@ avgStepsIntAll <- rbind(avgStepsIntWday, avgStepsIntWend)
 
 # Two panel plots with Average Steps per Day - plotted by weekend and weekday
 
-xyplot(mean ~ interval | dayType, data = avgStepsIntAll, type ='l', layout = c(1, 2))
+xyplot(mean ~ interval | dayType, data = avgStepsIntAll, type ='l', layout = c(1, 2),
+       main="Average Steps per Day - Weekend vs Weekday", xlab="Time Interval", ylab="Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
