@@ -1,47 +1,75 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 library(plyr)
 library(lattice)
 
 activity <- read.csv('activity.csv')
 ```
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 # Total Number of Steps Per Day
 stepsPerDay <- ddply(activity,~date,summarise,sum=sum(steps,na.rm = TRUE))
 
 # Histogram of Total Number of Steps Per Day
 with(stepsPerDay, hist(sum))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 # Mean and Median steps per day
 mean(stepsPerDay$sum)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 median(stepsPerDay$sum)
 ```
+
+```
+## [1] 10395
+```
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 # Average Steps Per Interval
 avgStepsInt <- ddply(activity,~interval,summarise,mean=mean(steps,na.rm = TRUE))
 
 plot(avgStepsInt$interval, avgStepsInt$mean, type='l')
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
 ## Imputing missing values
-```{r}
+
+```r
 # 5 Minute interval with max average number of steps
 subset(avgStepsInt, mean==max(avgStepsInt$mean))
+```
 
+```
+##     interval     mean
+## 104      835 206.1698
+```
+
+```r
 # Calculate the total number of rows with NA values
 sum(is.na(activity$steps))
+```
 
+```
+## [1] 2304
+```
 
+```r
 # To deal with with NA values, the strategy used is to calculate the average number
 # of steps per 5 minute interval and use that value to susbstitute NA values in the dataset
 
@@ -49,19 +77,40 @@ calcMean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 activityAdjusted <- ddply(activity, ~ interval, transform, steps = calcMean(steps))
 
 sum(is.na(activityAdjusted))
+```
 
+```
+## [1] 0
+```
+
+```r
 # Histogram of Steps per Day with NA values replaced with average steps/5 min interval
 stepsPerDay <- ddply(activityAdjusted,~date,summarise,sum=sum(steps,na.rm = TRUE))
 with(stepsPerDay, hist(sum))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 # Mean and Median steps per day with NA values replaced with average steps/5 min interval
 mean(stepsPerDay$sum)
-median(stepsPerDay$sum)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(stepsPerDay$sum)
+```
+
+```
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 # Convert activity$date to a date field
 activity$date <- as.Date(activity$date)
 
@@ -92,5 +141,6 @@ avgStepsIntAll <- rbind(avgStepsIntWday, avgStepsIntWend)
 # Two panel plots with Average Steps per Day - plotted by weekend and weekday
 
 xyplot(mean ~ interval | dayType, data = avgStepsIntAll, type ='l', layout = c(1, 2))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
