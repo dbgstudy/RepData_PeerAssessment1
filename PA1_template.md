@@ -23,20 +23,12 @@ with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day"))
 
 ```r
 # Mean and Median steps per day
-mean(stepsPerDay$sum)
+meanStepsPerDay <- round(mean(stepsPerDay$sum), digits=0)
+medianStepsPerDay <- median(stepsPerDay$sum)
 ```
+The mean steps per day is 9354.
+The median steps per day is 10395.
 
-```
-## [1] 9354.23
-```
-
-```r
-median(stepsPerDay$sum)
-```
-
-```
-## [1] 10395
-```
 ## What is the average daily activity pattern?
 
 ```r
@@ -49,28 +41,20 @@ plot(avgStepsInt$interval, avgStepsInt$mean, type='l', main = "Average Daily Pat
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
+```r
+# 5 Minute interval with max average number of steps
+maxStepsInt <- subset(avgStepsInt, mean==max(avgStepsInt$mean))$interval
+```
+
+The following 5-minute interval (on average) contains the max number of steps: 835
+
 ## Imputing missing values
 
 ```r
-# 5 Minute interval with max average number of steps
-subset(avgStepsInt, mean==max(avgStepsInt$mean))
-```
-
-```
-##     interval     mean
-## 104      835 206.1698
-```
-
-```r
 # Calculate the total number of rows with NA values
-sum(is.na(activity$steps))
-```
+misValCount <- sum(is.na(activity$steps))
 
-```
-## [1] 2304
-```
 
-```r
 # To deal with with NA values, the strategy used is to calculate the average number
 # of steps per 5 minute interval and use that value to susbstitute NA values in the dataset
 
@@ -94,20 +78,13 @@ with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day (NAs Replaced with
 
 ```r
 # Mean and Median steps per day with NA values replaced with average steps/5 min interval
-mean(stepsPerDay$sum)
+meanStepsPerDay <- as.integer(mean(stepsPerDay$sum))
+medianStepsPerDay <- as.integer(median(stepsPerDay$sum))
 ```
+The total number of missing values is 2304.  
+The mean steps per day (NAs replaced with Avg Steps/5 Min Interval)  is 10766.  
+The median steps per day (NAs replaced with Avg Steps/5 Min Interval) is 10766.
 
-```
-## [1] 10766.19
-```
-
-```r
-median(stepsPerDay$sum)
-```
-
-```
-## [1] 10766.19
-```
 
 ## Are there differences in activity patterns between weekdays and weekends?
 

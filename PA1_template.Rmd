@@ -22,9 +22,12 @@ stepsPerDay <- ddply(activity,~date,summarise,sum=sum(steps,na.rm = TRUE))
 with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day"))
 
 # Mean and Median steps per day
-mean(stepsPerDay$sum)
-median(stepsPerDay$sum)
+meanStepsPerDay <- round(mean(stepsPerDay$sum), digits=0)
+medianStepsPerDay <- median(stepsPerDay$sum)
 ```
+The mean steps per day is `r meanStepsPerDay`.
+The median steps per day is `r medianStepsPerDay`.
+
 ## What is the average daily activity pattern?
 ```{r}
 # Average Steps Per Interval
@@ -32,15 +35,19 @@ avgStepsInt <- ddply(activity,~interval,summarise,mean=mean(steps,na.rm = TRUE))
 
 plot(avgStepsInt$interval, avgStepsInt$mean, type='l', main = "Average Daily Pattern",
      xlab="Time Interval", ylab="Steps")
+
+# 5 Minute interval with max average number of steps
+maxStepsInt <- subset(avgStepsInt, mean==max(avgStepsInt$mean))$interval
+
 ```
+
+The following 5-minute interval (on average) contains the max number of steps: `r maxStepsInt`
 
 ## Imputing missing values
 ```{r}
-# 5 Minute interval with max average number of steps
-subset(avgStepsInt, mean==max(avgStepsInt$mean))
 
 # Calculate the total number of rows with NA values
-sum(is.na(activity$steps))
+misValCount <- sum(is.na(activity$steps))
 
 
 # To deal with with NA values, the strategy used is to calculate the average number
@@ -56,10 +63,14 @@ stepsPerDay <- ddply(activityAdjusted,~date,summarise,sum=sum(steps,na.rm = TRUE
 with(stepsPerDay, hist(sum, xlab="Steps", main="Steps per Day (NAs Replaced with Average Steps/5 Min Interval)"))
 
 # Mean and Median steps per day with NA values replaced with average steps/5 min interval
-mean(stepsPerDay$sum)
-median(stepsPerDay$sum)
+meanStepsPerDay <- as.integer(mean(stepsPerDay$sum))
+medianStepsPerDay <- as.integer(median(stepsPerDay$sum))
 
 ```
+The total number of missing values is `r misValCount`.  
+The mean steps per day (NAs replaced with Avg Steps/5 Min Interval)  is `r meanStepsPerDay`.  
+The median steps per day (NAs replaced with Avg Steps/5 Min Interval) is `r medianStepsPerDay`.
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r}
